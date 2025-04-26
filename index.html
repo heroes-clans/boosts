@@ -103,35 +103,59 @@
         }
 
        .popup-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(8px);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
     
     .popup-content {
-        background: rgba(15, 23, 42, 0.95);
-        padding: 2rem;
-        border-radius: 1rem;
-        max-width: 90%;
-        width: 400px;
-        position: relative;
-        transform: scale(0.95);
-        transition: transform 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    }
+    background: linear-gradient(135deg, rgba(20, 30, 48, 0.95), rgba(10, 15, 30, 0.95));
+    padding: 2.5rem;
+    border-radius: 1.2rem;
+    max-width: 90%;
+    width: 420px;
+    position: relative;
+    transform: scale(0.8) translateY(30px);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 30px 60px -12px rgba(0, 0, 0, 0.6),
+        0 0 40px rgba(0, 0, 0, 0.3) inset,
+        0 0 30px rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+}
 
 
+.popup-overlay.active .popup-content {
+    transform: scale(1) translateY(0);
+}
+
+.popup-content::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, 
+                  rgba(255, 255, 255, 0.05) 0%, 
+                  rgba(255, 255, 255, 0) 60%);
+    opacity: 0;
+    transform: scale(1.5);
+    animation: pulse 10s ease-out infinite;
+    pointer-events: none;
+}
 
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -152,6 +176,14 @@
             color: #FFD700;
             text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
         }
+        
+        @keyframes pulse {
+    0% { opacity: 0; transform: scale(1.5); }
+    30% { opacity: 0.3; transform: scale(1); }
+    70% { opacity: 0.1; transform: scale(1.2); }
+    100% { opacity: 0; transform: scale(1.5); }
+}
+
 
         .title-big {
             font-size: 48px;
@@ -794,13 +826,8 @@
 .popup-content:hover {
     transform: perspective(1000px) rotateX(2deg) rotateY(2deg);
 }
-          
-  .rune-details img {
-    width: auto; /* Cambiado de width: 100% */
-    height: 128px; /* Altura fija *
-    margin: 0 auto;
-    object-fit: contain; /* Asegura que la imagen mantenga su proporción */
-}
+
+
             
  .rune-details img:hover {
     transform: scale(1.05);
@@ -1141,6 +1168,42 @@
     transform: scale(1.2);
 }
 
+
+/* Colócalo dentro de tu etiqueta <style> existente, cerca del final */
+.rune-card {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-style: preserve-3d;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rune-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--x) var(--y), 
+                  rgba(255, 255, 255, 0.1) 0%, 
+                  rgba(255, 255, 255, 0) 50%);
+    opacity: 0;
+    transition: opacity 0.5s;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.rune-card:hover::before {
+    opacity: 1;
+}
+
+.rune-card:hover {
+    transform: translateY(-10px) scale(1.02) rotateX(5deg) rotateY(5deg);
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.4),
+        0 0 25px rgba(255, 255, 255, 0.1),
+        0 0 15px rgba(var(--glow-color, 255, 255, 255), 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
     </style>
     
     <style> 
@@ -1331,24 +1394,30 @@
         100% { border-color: rgba(255, 255, 255, 0.2); }
     }
     
-     .popup-close-btn {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        background: none;
-        border: none;
-        padding: 0.25rem 0.5rem;
-        line-height: 1;
-    }
-    
-    .popup-close-btn:hover {
-        color: rgba(255, 255, 255, 0.7);
-        transform: scale(1.1);
-    }
+ .popup-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+    z-index: 5;
+}
+
+.popup-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
     
     .availability-container {
   margin-top: 15px;
@@ -1389,6 +1458,447 @@
   background-color: #4a49b3;
 }
 
+/* ESTILOS DEL OVERLAY DE MANTENIMIENTO - CATÁLOGO DE BOOSTS */
+/* Nota: Muchos estilos base ya están definidos para la tienda, estos son específicos */
+
+/* Tema de boosts */
+.boost-theme .blur-layer {
+    background-color: rgba(18, 6, 38, 0.85);
+}
+
+/* FIRE TEXT EFFECT */
+.fire-text-container {
+    position: relative;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    z-index: 3;
+}
+
+.fire-text {
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.3rem, 5vw, 2.5rem);
+    line-height: 1.2;
+    margin: 0;
+    padding: 0.5rem;
+    background: none;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    filter: drop-shadow(0 2px 15px rgba(255, 60, 0, 0.7));
+    display: inline-block;
+    transform-style: preserve-3d;
+    perspective: 500px;
+}
+
+/* Fondo de fuego animado para el texto */
+.fire-text::before {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(
+            45deg,
+            #ff3c00, 
+            #ff7a00, 
+            #ffae00, 
+            #ffce00, 
+            #ff7a00, 
+            #ff3c00
+        );
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    z-index: -1;
+    animation: fireFlow 8s linear infinite;
+    filter: contrast(1.5) brightness(1.3);
+}
+
+/* Textura para el efecto de fuego */
+.fire-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.08' numOctaves='3' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.5 0' result='colorNoise'/%3E%3CfeComposite operator='in' in='colorNoise' in2='SourceGraphic' result='monoNoise'/%3E%3CfeBlend in='SourceGraphic' in2='monoNoise' mode='multiply' result='finalNoise'/%3E%3CfeGaussianBlur in='finalNoise' stdDeviation='0.5' result='blurredNoise'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"),
+    linear-gradient(
+        45deg,
+        rgba(255, 60, 0, 0.8),
+        rgba(255, 100, 0, 0.7),
+        rgba(255, 140, 0, 0.9),
+        rgba(255, 100, 0, 0.7),
+        rgba(255, 60, 0, 0.8)
+    );
+    background-size: 100% 100%, 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    z-index: -2;
+    mix-blend-mode: overlay;
+    filter: brightness(1.4) contrast(1.5);
+    animation: fireNoiseShift 6s ease-in-out infinite alternate, fireFlow 5s linear infinite reverse;
+}
+
+/* Animaciones para el efecto fuego */
+@keyframes fireFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes fireNoiseShift {
+    0% { background-position: 0% 0%, 0% 50%; filter: brightness(1.3) contrast(1.4); }
+    100% { background-position: 15% 20%, 100% 50%; filter: brightness(1.6) contrast(1.8); }
+}
+
+/* Estilos específicos para el subtítulo de boost */
+.boost-subtitle {
+    color: #ffbb00;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7),
+                 0 0 10px rgba(255, 187, 0, 0.6);
+}
+
+/* PIXEL POTION */
+.pixel-potion {
+    width: 64px;
+    height: 64px;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="none"/><rect x="6" y="1" width="4" height="1" fill="purple"/><rect x="5" y="2" width="6" height="1" fill="purple"/><rect x="5" y="3" width="6" height="1" fill="purple"/><rect x="6" y="4" width="4" height="1" fill="purple"/><rect x="4" y="5" width="8" height="1" fill="purple"/><rect x="3" y="6" width="10" height="1" fill="magenta"/><rect x="3" y="7" width="10" height="2" fill="magenta"/><rect x="3" y="9" width="10" height="1" fill="magenta"/><rect x="4" y="10" width="8" height="1" fill="magenta"/><rect x="4" y="11" width="8" height="1" fill="magenta"/><rect x="5" y="12" width="6" height="1" fill="magenta"/><rect x="6" y="13" width="4" height="1" fill="magenta"/></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin: 0 auto;
+    animation: potionBubble 4s infinite;
+    filter: drop-shadow(0 0 12px rgba(255, 0, 255, 0.6));
+    image-rendering: pixelated;
+}
+
+@keyframes potionBubble {
+    0% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.4)); }
+    25% { transform: translateY(-8px) rotate(-5deg); filter: drop-shadow(0 0 12px rgba(255, 0, 255, 0.7)); }
+    50% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.4)); }
+    75% { transform: translateY(-8px) rotate(5deg); filter: drop-shadow(0 0 12px rgba(255, 0, 255, 0.7)); }
+    100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.4)); }
+}
+
+/* Estilo específico para la firma del catálogo de boosts */
+.boost-signature {
+    color: #ffcc00;
+    background: rgba(128, 0, 128, 0.2);
+    border: 1px solid rgba(255, 204, 0, 0.2);
+    transform: rotate(2deg);
+}
+
+/* Estilo específico para el botón de email del catálogo de boosts */
+.boost-email {
+    background: rgba(60, 20, 80, 0.7);
+    border-color: rgba(255, 204, 0, 0.3);
+}
+
+.boost-email:hover {
+    background: rgba(80, 30, 100, 0.9);
+    border-color: rgba(255, 204, 0, 0.5);
+}
+
+.boost-icon {
+    background: rgba(100, 0, 100, 0.3);
+}
+
+/* Mensajes específicos para boosts */
+.boost-messages .floating-message {
+    color: #ffdd99;
+}
+
+/* ESTILOS BASE DEL OVERLAY DE MANTENIMIENTO (compartidos entre tienda y boosts) */
+.maintenance-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.blur-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(8px);
+    background-color: rgba(10, 10, 42, 0.85);
+    z-index: 0;
+}
+
+.maintenance-content {
+    max-width: 90%;
+    width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Partículas y malla interactiva */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Mensajes flotantes compartidos */
+.messages-container {
+    width: 100%;
+    height: auto;
+    min-height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 2rem;
+    left: 0;
+    right: 0;
+    overflow: visible;
+    padding: 1rem 0;
+}
+
+.floating-message {
+    position: absolute;
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+    line-height: 1.6;
+    color: white;
+    text-align: center;
+    opacity: 0;
+    transform: translateX(100vw);
+    filter: blur(0px);
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+    padding: 0.5rem 1rem;
+    width: 90%;
+    max-width: 800px;
+    user-select: none;
+    transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                opacity 1.2s cubic-bezier(0.165, 0.84, 0.44, 1),
+                filter 1.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.floating-message.visible {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0px);
+}
+
+.floating-message.fading {
+    opacity: 0;
+    transform: translateX(-100vw);
+    filter: blur(8px);
+}
+
+/* Pixel art base */
+.pixel-art-container {
+    margin: 1.5rem 0;
+    position: relative;
+    z-index: 3;
+}
+
+/* Texto pixelado base */
+.pixel-text-container {
+    position: relative;
+    margin: 1.5rem 0;
+    z-index: 3;
+}
+
+.pixel-text {
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(0.6rem, 2.5vw, 0.8rem);
+    color: white;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+    opacity: 0.9;
+    position: relative;
+    animation: pixelGlow 3s ease-in-out infinite;
+    letter-spacing: 1px;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform: rotate(-2deg);
+}
+
+@keyframes pixelGlow {
+    0%, 100% { 
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7), 0 0 0px rgba(255, 255, 255, 0); 
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0); 
+    }
+    50% { 
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7), 0 0 10px rgba(255, 255, 255, 0.5); 
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); 
+    }
+}
+
+/* Subtítulo animado */
+.subtitle-container {
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 3;
+}
+
+.animated-subtitle {
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(0.8rem, 3vw, 1.1rem);
+    color: white;
+    position: relative;
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7),
+                 0 0 10px rgba(93, 92, 222, 0.6);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* EMAIL CONTAINER BASE */
+.email-container {
+    margin-top: 2rem;
+    position: relative;
+    width: 90%;
+    max-width: 450px;
+    z-index: 3;
+}
+
+.email-button {
+    display: flex;
+    align-items: center;
+    background: rgba(30, 30, 50, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 0.8rem;
+    color: white;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.email-button:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0) 100%);
+    z-index: 0;
+}
+
+.email-button:hover {
+    background: rgba(40, 40, 70, 0.9);
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.email-button:active {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.email-icon-container {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.email-icon {
+    font-size: 1.8rem;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+    animation: floatIcon 3s ease-in-out infinite;
+    position: relative;
+    z-index: 1;
+}
+
+.email-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    position: relative;
+    z-index: 1;
+    flex-grow: 1;
+    width: calc(100% - 70px);
+}
+
+.email-title {
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    font-size: clamp(0.8rem, 3vw, 1rem);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    font-family: 'Press Start 2P', cursive;
+}
+
+.email-address {
+    font-size: clamp(0.6rem, 2.5vw, 0.8rem);
+    opacity: 0.9;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    display: block;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes floatIcon {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Impide el scroll mientras el overlay está activo */
+body.maintenance-active {
+    overflow: hidden;
+    touch-action: none;
+}
+
 </style>
 
 
@@ -1396,7 +1906,58 @@
     
 </head>
 <body>
+  <!-- OVERLAY DE MANTENIMIENTO PARA EL CATÁLOGO DE BOOSTS -->
+<div id="maintenance-overlay-boosts" class="maintenance-overlay boost-theme">
+    <!-- Malla de partículas interactiva -->
+    <div id="particles-js-boosts" class="particles-container"></div>
     
+    <!-- Capa de blur mejorada -->
+    <div class="blur-layer boost-blur"></div>
+    
+    <div class="maintenance-content">
+        <!-- Contenedor del texto de fuego -->
+        <div class="fire-text-container">
+            <h1 class="fire-text" data-text="PRONTO LLEGARÁ EL CATÁLOGO DE BOOSTS">PRONTO LLEGARÁ EL CATÁLOGO DE BOOSTS</h1>
+        </div>
+        
+        <!-- Subtítulo con animación -->
+        <div class="subtitle-container">
+            <p class="animated-subtitle boost-subtitle">Preparando poder absoluto...</p>
+        </div>
+        
+        <!-- Contenedor de mensajes humorísticos -->
+        <div class="messages-container boost-messages">
+            <div class="floating-message"></div>
+        </div>
+        
+        <!-- Pixel art decorativo -->
+        <div class="pixel-art-container">
+            <div class="pixel-potion"></div>
+        </div>
+        
+        <!-- Firma con efecto pixelado -->
+        <div class="pixel-text-container">
+            <p class="pixel-text boost-signature">att: MortALEdo y ALEXtón</p>
+        </div>
+        
+        <!-- Email para ideas/contacto -->
+        <div class="email-container">
+            <a href="mailto:heroesclanson@gmail.com" class="email-button boost-email">
+                <div class="email-icon-container boost-icon">
+                    <span class="email-icon">✉️</span>
+                </div>
+                <div class="email-text">
+                    <span class="email-title">¿Más ideas locas?</span>
+                    <span class="email-address">heroesclanson@gmail.com</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+    
+    
+
     <div class="progress-bar-container">
     <div class="progress-bar"></div>
 </div>
@@ -1407,7 +1968,7 @@
     <div class="parallax-wrapper">
         <section class="hero">
     <video class="video-bg" autoplay muted loop playsinline>
-    <source src="hero2.mp4" type="video/mp4">
+    <source src="hero.mp4" type="video/mp4">
 </video>
 
     <div class="absolute inset-0 flex items-center justify-center text-center">
@@ -1425,7 +1986,7 @@
 
           
 </section>
-    </div>
+    
   
 
 
@@ -2039,6 +2600,392 @@ function closeItemPopup() {
             });
         });
     });
+    
+    // Añade este script justo antes del </body>
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.rune-card');
+    
+    cards.forEach(card => {
+        card.addEventListener('mousemove', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Porcentaje dentro del elemento
+            const xPercent = `${(x / rect.width) * 100}%`;
+            const yPercent = `${(y / rect.height) * 100}%`;
+            
+            // Actualiza la posición del gradiente
+            this.style.setProperty('--x', xPercent);
+            this.style.setProperty('--y', yPercent);
+            
+            // Rotación 3D basada en la posición del mouse
+            const rotateY = ((x / rect.width) - 0.5) * 15;
+            const rotateX = ((y / rect.height) - 0.5) * -15;
+            
+            this.style.transform = `
+                translateY(-10px) 
+                rotateX(${rotateX}deg) 
+                rotateY(${rotateY}deg)
+                scale(1.02)
+            `;
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) rotateX(0) rotateY(0) scale(1)';
+        });
+    });
+});
+
+// JAVASCRIPT PARA EL OVERLAY DE MANTENIMIENTO - CATÁLOGO DE BOOSTS
+document.addEventListener('DOMContentLoaded', function() {
+    // Añadir clase al body para evitar scroll
+    document.body.classList.add('maintenance-active');
+    
+    // Cargar la librería particles.js dinámicamente si no está ya cargada
+    if (typeof particlesJS === 'undefined') {
+        loadParticlesJS();
+    } else {
+        configureBoostParticles();
+    }
+    
+    // Configuración para el texto de fuego
+    setupFireText();
+    
+    // Configurar los mensajes flotantes humorísticos
+    setupBoostMessages();
+    
+    // Configurar animaciones adicionales
+    setupBoostAnimations();
+    
+    // Añadir efecto de paralaje suave al mover el ratón
+    setupBoostMouseParallax();
+});
+
+// Función para cargar particles.js dinámicamente (si no se ha cargado ya)
+function loadParticlesJS() {
+    const particlesScript = document.createElement('script');
+    particlesScript.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
+    particlesScript.onload = function() {
+        // Configurar particles.js cuando se haya cargado
+        configureBoostParticles();
+    };
+    document.head.appendChild(particlesScript);
+}
+
+// Función para configurar particles.js específico para boosts
+function configureBoostParticles() {
+    if (window.particlesJS) {
+        particlesJS('particles-js-boosts', {
+            "particles": {
+                "number": {
+                    "value": 50,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": ["#ff3c00", "#ff7a00", "#ffae00", "#ffce00"]
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.3,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 2,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ff7a00",
+                    "opacity": 0.2,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1.5,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": true,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "bubble"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "bubble": {
+                        "distance": 150,
+                        "size": 6,
+                        "duration": 2,
+                        "opacity": 0.8,
+                        "speed": 3
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+    }
+}
+// Función para inicializar el texto de fuego
+function setupFireText() {
+    // Agregar el texto como atributo de datos para usarlo en pseudo-elementos
+    const fireText = document.querySelector('.fire-text');
+    if (fireText) {
+        fireText.setAttribute('data-text', fireText.textContent);
+    }
+}
+
+// Mensajes humorísticos para el catálogo de boosts
+const boostHumorMessages = [
+    "Forjando poderes místicos en la fragua cósmica...",
+    "Despertando a los dragones guardianes de los Boosts...",
+    "Sacrificando noobs en el altar de los Boosts...",
+    "Inventando excusas para justificar tanto poder...",
+    "Poniendo a dieta a los Boosts para que no ocupen tanto...",
+    "Haciendo que los Boosts hagan 50 flexiones diarias...",
+    "Entrevistando a candidatos para ser Boosts...",
+    "Mezclando pociones prohibidas para crear Boosts OP...",
+    "Convenciendo a los Boosts de que trabajen gratis...",
+    "Robando magia de mundos paralelos...",
+    "Negociando con demonios para conseguir descuentos...",
+    "Cargando efectos visuales innecesariamente épicos...",
+    "Explicándole a mi abuela qué es un Boost...",
+    "Golpeando la pantalla para hacer que los píxeles se alineen...",
+    "Asustando a los Boosts débiles para que sean más fuertes...",
+    "Discutiendo si debería existir un Boost que haga café...",
+    "Creando Boosts prohibidos en 47 países...",
+    "Registrando marca para 'Super Ultra Mega Boost'...",
+    "Poniendo nombres cool a efectos básicos...",
+    "Haciendo que los números suban más rápido...",
+    "Probando Boosts en humanos voluntarios (más o menos)...",
+    "Diseñando iconos que brillan sin razón aparente...",
+    "Añadiendo partículas porque sí...",
+    "Intentando hacer que los Boosts suenen a explosiones...",
+    "Pidiendo préstamos para pagar estos efectos visuales...",
+    "Creando un Boost que te hace guapo (resultados no garantizados)...",
+    "Enviando un equipo en búsqueda del Boost legendario perdido...",
+    "Redactando términos legales que nadie leerá...",
+    "Añadiendo asteriscos a efectos secundarios preocupantes...",
+    "Consultando al oráculo de los multiplicadores...",
+    "Midiendo el poder en unidades absurdas...",
+    "Exagerando los efectos en la descripción...",
+    "Ocultando nerfeos en letra pequeña...",
+    "Tirando dados para determinar la rareza...",
+    "Encadenando a los programadores hasta que terminen...",
+    "Prometiendo a Ale que esta vez no romperemos nada...",
+    "Estirando la definición de 'equilibrado'...",
+    "Cocinando algoritmos con recetas ancestrales...",
+    "Activando el modo 'a tope con todo'..."
+];
+
+// Función para configurar los mensajes flotantes específicos para boosts
+function setupBoostMessages() {
+    const messageContainer = document.querySelector('.boost-messages .floating-message');
+    if (!messageContainer) return;
+    
+    let currentIndex = 0;
+    
+    function showNextMessage() {
+        // Primero quitamos la clase visible
+        messageContainer.classList.remove('visible');
+        messageContainer.classList.add('fading');
+        
+        // Esperamos a que termine la animación de desvanecimiento
+        setTimeout(() => {
+            // Actualizamos el contenido del mensaje
+            messageContainer.textContent = boostHumorMessages[currentIndex];
+            
+            // Quitamos la clase fading
+            messageContainer.classList.remove('fading');
+            
+            // Forzamos un reflow antes de añadir la clase visible
+            void messageContainer.offsetWidth;
+            
+            // Añadimos la clase visible
+            messageContainer.classList.add('visible');
+            
+            // Avanzamos al siguiente mensaje
+            currentIndex = (currentIndex + 1) % boostHumorMessages.length;
+            
+            // Programamos el siguiente cambio de mensaje
+            setTimeout(showNextMessage, 6000);
+        }, 1200);
+    }
+
+    // Iniciamos el ciclo de mensajes
+    // Hacemos visible el primer mensaje inmediatamente
+    messageContainer.textContent = boostHumorMessages[0];
+    messageContainer.classList.add('visible');
+    currentIndex = 1;
+    
+    // Programamos el cambio al siguiente mensaje
+    setTimeout(showNextMessage, 6000);
+}
+
+// Funciones para animaciones del overlay
+function setupBoostAnimations() {
+    // Efecto de brillo aleatorio para el botón de email
+    const emailButton = document.querySelector('.boost-email');
+    if (emailButton) {
+        // Efecto aleatorio de resplandor en el botón
+        function randomGlowEffect() {
+            const duration = Math.random() * 1000 + 500;
+            emailButton.style.boxShadow = `0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 204, 0, ${Math.random() * 0.2 + 0.1})`;
+            
+            setTimeout(() => {
+                emailButton.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2), 0 0 0 rgba(255, 204, 0, 0)';
+                
+                // Programar próximo resplandor
+                setTimeout(randomGlowEffect, Math.random() * 3000 + 1000);
+            }, duration);
+        }
+        
+        // Iniciar efectos aleatorios
+        setTimeout(randomGlowEffect, 2000);
+    }
+    
+    // Animación para el texto de fuego
+    const fireText = document.querySelector('.fire-text');
+    if (fireText) {
+        fireText.style.transform = 'translateZ(0)'; // Forzar aceleración por hardware
+        
+        // Animación para los elementos con clase .fire-text
+        function animateFireText() {
+            const amplitude = 2; // Amplitud del movimiento
+            const now = Date.now() / 1000;
+            const offsetY = Math.sin(now) * amplitude;
+            
+            fireText.style.transform = `translateY(${offsetY}px)`;
+            
+            requestAnimationFrame(animateFireText);
+        }
+        
+        // Iniciar animación
+        animateFireText();
+    }
+    
+    // Animación para el subtítulo
+    const subtitle = document.querySelector('.boost-subtitle');
+    if (subtitle) {
+        subtitle.style.transform = 'translateZ(0)';
+        subtitle.style.opacity = '0';
+        
+        // Aparecer con fade in
+        setTimeout(() => {
+            subtitle.style.transition = 'opacity 1.5s ease-in-out';
+            subtitle.style.opacity = '1';
+        }, 800);
+    }
+    
+    // Animación para la poción
+    const potion = document.querySelector('.pixel-potion');
+    if (potion) {
+        // Efecto aleatorio de brillos
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                potion.style.filter = `drop-shadow(0 0 ${Math.random() * 10 + 10}px rgba(255, 0, 255, 0.8))`;
+                setTimeout(() => {
+                    potion.style.filter = 'drop-shadow(0 0 8px rgba(255, 0, 255, 0.6))';
+                }, 200);
+            }
+        }, 1000);
+    }
+}
+
+// Función para configurar el efecto de paralaje específico para boosts
+function setupBoostMouseParallax() {
+    document.addEventListener('mousemove', function(e) {
+        const overlay = document.getElementById('maintenance-overlay-boosts');
+        if (!overlay) return;
+        
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        
+        // Calcular la posición relativa del ratón
+        const mouseX = e.clientX / width - 0.5;
+        const mouseY = e.clientY / height - 0.5;
+        
+        // Obtener elementos para el paralaje
+        const fireText = document.querySelector('.fire-text');
+        const messageContainer = document.querySelector('.boost-messages');
+        const pixelText = document.querySelector('.boost-signature');
+        const emailButton = document.querySelector('.boost-email');
+        const subtitle = document.querySelector('.boost-subtitle');
+        const pixelPotion = document.querySelector('.pixel-potion');
+        
+        // Aplicar transformaciones con diferentes intensidades
+        if (fireText) fireText.style.transform = `translate3d(${mouseX * -25}px, ${mouseY * -25}px, 0)`;
+        if (messageContainer) messageContainer.style.transform = `translate3d(${mouseX * -12}px, ${mouseY * -12}px, 0)`;
+        if (pixelText) pixelText.style.transform = `translate3d(${mouseX * -8}px, ${mouseY * -8}px, 0) rotate(2deg)`;
+        if (emailButton) emailButton.style.transform = `translate3d(${mouseX * -10}px, ${mouseY * -10}px, 0)`;
+        if (subtitle) subtitle.style.transform = `translate3d(${mouseX * -18}px, ${mouseY * -18}px, 0)`;
+        if (pixelPotion) {
+            const rotationX = mouseY * 15;
+            const rotationY = mouseX * 15;
+            pixelPotion.style.transform = `translate3d(${mouseX * -30}px, ${mouseY * -30}px, 0) rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+        }
+    });
+}
+
+// Función para quitar el overlay cuando sea necesario
+function removeBoostOverlay() {
+    const overlay = document.getElementById('maintenance-overlay-boosts');
+    if (overlay) {
+        // Añadir clase para animación de salida
+        overlay.style.opacity = '0';
+        
+        // Remover después de que termine la animación
+        setTimeout(() => {
+            overlay.remove();
+            document.body.classList.remove('maintenance-active');
+        }, 1000);
+    }
+}
+
 </script>
 
 
